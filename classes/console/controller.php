@@ -134,11 +134,17 @@ class Console_Controller extends Kohana_Controller_Template
 
 					foreach( $files as $file => $path )
 					{
-						list( $logs, $year, $month, $fn ) = explode( DIRECTORY_SEPARATOR, $file );
+						$mtime = date('H:i', filemtime($path));
+						$file = str_replace( $this->dir . DIRECTORY_SEPARATOR, '', $file );
+						list( $year, $month, $fn ) = explode(DIRECTORY_SEPARATOR, $file );
 						$day = explode('.', $fn);
-						$dir[$year][$month][$day[0]] = str_replace($this->dir . DIRECTORY_SEPARATOR, '', $file);
+						// path -> url; need to change backslash to slash on win systems
+						$file = str_replace( DIRECTORY_SEPARATOR, '/', $file );
+						$dir[$year][$month][$day[0]]['fname'] = $file;
+						$dir[$year][$month][$day[0]]['mtime'] = $mtime;
+						if ( $active === NULL )
+							$active = pathinfo( $file );
 					}
-
 				}
 
 			}
